@@ -14,3 +14,4 @@ score_storage/
 video/*/
 third_party/*/
 tools/
+.idea

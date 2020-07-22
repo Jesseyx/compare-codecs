@@ -20,7 +20,7 @@ set -e
 cd $WORKDIR/video
 
 # The Derf collection is easily available via rsync.
-rsync -avz --max-size=100M rsync://media.xiph.org/y4m derf
+rsync -avz --max-size=100M rsync://media.xiph.org/video/derf/y4m derf
 # but the format is y4m not yuv
 for file in derf/*.y4m; do
   unpack_y4m $file || echo "Skipping $file"

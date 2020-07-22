@@ -25,12 +25,14 @@ if [ "$1" = "travis" ]; then
   MODE=nocompile
 fi
 
+sudo apt-get update
+
 # Requirements for compiling various packages and scripts.
 sudo apt-get install yasm mkvtoolnix mercurial cmake cmake-curses-gui \
-  build-essential yasm nasm python-numpy
+  build-essential yasm nasm python-numpy python-pip
 
 # Install prerequisites for running Jekyll as a web server
-sudo apt-get install ruby1.9.1-dev nodejs
+sudo apt-get install ruby-dev nodejs
 # Jekyll 2.4.0 depends on redcarpet.
 # Redcarpet 3.1.2 depends on ruby 1.9.2 or later.
 # redcarpet 3.0.0 is installable under 1.9.1.
@@ -42,9 +44,11 @@ sudo gem install jekyll -v 1.5.1
 sudo -H pip install y4m
 
 # Install depot_tools - we use the pylint from there
-rm -rf third_party/depot_tools
-git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git \
-   third_party/depot_tools
+if [ ! -d third_party/depot_tools ]; then
+  rm -rf third_party/depot_tools
+  git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git \
+    third_party/depot_tools
+fi
 
 # Compile from source everything that needs compiling.
 if [ "$MODE" != "nocompile" ]; then

@@ -48,7 +48,8 @@ cd $WORKDIR/third_party
 build_vpxenc() {
   # Build the vpxenc and vpxdec binaries
   if [ ! -d libvpx ]; then
-    git clone http://git.chromium.org/webm/libvpx.git
+#    git clone http://git.chromium.org/webm/libvpx.git
+    git clone https://chromium.googlesource.com/webm/libvpx
   fi
   cd libvpx
   # Ensure we check out exactly a consistent version.
@@ -74,7 +75,8 @@ build_vpxenc() {
 build_x264() {
   # Build the x264 binary.
   if [ ! -d x264 ]; then
-    git clone git://git.videolan.org/x264.git
+#    git clone git://git.videolan.org/x264.git
+    git clone https://code.videolan.org/videolan/x264.git
   fi
   cd x264
   # This version of x264 is chosen because the next step requires yasm 1.2.
@@ -91,7 +93,8 @@ build_x264() {
 build_ffmpeg() {
   # Build the ffmpeg binary.
   if [ ! -d ffmpeg ]; then
-    git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
+#    git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
+    git clone https://git.videolan.org/git/ffmpeg.git ffmpeg
   fi
   cd ffmpeg
   # A known working 2012 version (without H265 support)
@@ -130,7 +133,11 @@ build_hevc_hm() {
   fi
   HM_VERSION=HM-16.3
   cd jctvc-hm
-  svn checkout svn://hevc.kw.bbc.co.uk/svn/jctvc-hm/tags/$HM_VERSION
+#  svn checkout svn://hevc.kw.bbc.co.uk/svn/jctvc-hm/tags/$HM_VERSION
+  git clone https://vcgit.hhi.fraunhofer.de/jct-vc/HM.git $HM_VERSION
+  cd $HM_VERSION
+  git checkout $HM_VERSION
+  cd ..
   pushd $HM_VERSION/build/linux
   make
   popd
@@ -143,7 +150,8 @@ build_hevc_hm() {
 build_openh264() {
   # Build the Open H264 implementation.
   if [ ! -d openh264 ]; then
-    git clone git@github.com:cisco/openh264.git
+#    git clone git@github.com:cisco/openh264.git
+    git clone https://github.com/cisco/openh264.git
   fi
   cd openh264
   git fetch --tags
@@ -178,25 +186,39 @@ while [ "$1" != "" ]; do
   cd $WORKDIR/third_party
   case $1 in
     vpxenc)
-      build_vpxenc
+      if [ ! -f $TOOLDIR/vpxenc ]; then
+        build_vpxenc
+      fi
       ;;
     x264)
-      build_x264
+      if [ ! -f $TOOLDIR/x264 ]; then
+        build_x264
+      fi
       ;;
     ffmpeg)
-      build_ffmpeg
+      if [ ! -f $TOOLDIR/ffmpeg ]; then
+        build_ffmpeg
+      fi
       ;;
     x265)
-      build_x265
+      if [ ! -f $TOOLDIR/x265 ]; then
+        build_x265
+      fi
       ;;
     hevc)
-      build_hevc_hm
+      if [ ! -f $TOOLDIR/TAppEncoderStatic ]; then
+        build_hevc_hm
+      fi
       ;;
     openh264)
-      build_openh264
+      if [ ! -f $TOOLDIR/h264enc ]; then
+        build_openh264
+      fi
       ;;
     libavc)
-      build_libavc
+      if [ ! -f $TOOLDIR/avcenc ]; then
+        build_libavc
+      fi
       ;;
     *)
       echo "Can't do $1"
